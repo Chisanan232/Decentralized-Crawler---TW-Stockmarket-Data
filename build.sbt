@@ -1,4 +1,4 @@
-name := "GoogleMap_Cafe_Decentralized_Crawler"
+name := "Taiwan_StockMarket_Decentralized_Crawler"
 
 version := "1.0"
 
