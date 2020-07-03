@@ -13,6 +13,8 @@ import akka.pattern.ask
 
 class CauchyKing extends Actor with ActorLogging {
 
+  import context.dispatcher
+
   val check = new CheckMechanism
 
   var totalTasksNum = 0
