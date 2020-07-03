@@ -9,7 +9,7 @@ import org.apache.spark.sql.SparkSession
  */
 class DataSource {
 
-  val DataFilePath = "src/main/scala/Taiwan_stock_market_crawler_Cauchy/src/resources/all_listed_company.json"
+  val DataFilePath = "src/main/scala/Taiwan_stock_market_crawler_Cauchy/src/main/resources/all_listed_company.json"
 
   val spark: SparkSession = SparkSession.builder()
     .appName("Taiwan Stock Market decentralized crawler")
