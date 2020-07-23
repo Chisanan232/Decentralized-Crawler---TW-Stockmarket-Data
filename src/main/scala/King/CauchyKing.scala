@@ -25,7 +25,7 @@ class CauchyKing extends Actor with ActorLogging {
   var currentDoneTaskNum = 0
 
   var StockIDs: List[Any] = _
-  var DataTimes: List[String] = _
+  var DateTimes: List[String] = _
 
   final private val pp: String = AkkaConfig.DataAnalyserDepartment.ProducerPaladinName
   final private val sp: String = AkkaConfig.DataAnalyserDepartment.SearchDateSoldierName
@@ -52,7 +52,7 @@ class CauchyKing extends Actor with ActorLogging {
   /** Send Task content to Paladin **/
   private final def sendTaskMsg(actor: ActorSelection, actorName: String): Unit = {
     actorName match {
-      case this.pp => actor ! MayIUseData
+      case this.pp => actor ! GenerateAPI("\uD83D\uDC40 Here are pre-data all we need.", totalTasksNum, StockIDs, DateTimes)
       case this.sp => actor ! NeedCrawlerCondition
       case this.cp => actor ! AwaitDataAndCrawl
     }
@@ -75,7 +75,9 @@ class CauchyKing extends Actor with ActorLogging {
     // Load data into King Actor.
     totalTasksNum = this.preData.dataNumber()
     StockIDs = this.preData.stockSymbolData()
-    DataTimes = this.preDataDatetime.targetDateRange()
+    DateTimes = this.preDataDatetime.targetDateRange()
+
+    this.preData.closeSpark()
 
     super.preStart()
   }
