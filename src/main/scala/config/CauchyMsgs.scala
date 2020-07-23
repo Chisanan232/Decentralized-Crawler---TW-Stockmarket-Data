@@ -14,20 +14,20 @@ trait CauchyMsgs {
 case class DataAim(content: String) extends CauchyMsgs  // Receiver: King
 
 // King
-case class CallCrawlerPremier(content: String) extends CauchyMsgs  // Receiver: Crawler Premier
-case class AwaitDataAndCrawl(content: String) extends CauchyMsgs  // Receiver: Crawler Premier
-case class CallDataPremier(content: String) extends CauchyMsgs  // Receiver: Data Analyser Premier
-case class MayIUseData(content: String) extends CauchyMsgs  // Receiver: Data Analyser Premier
+case class CallDataProducerPaladin(content: String) extends CauchyMsgs  // Receiver: Producer Paladin
+case class CallDataSnifferPaladin(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin
+case class CallCrawlerPaladin(content: String) extends CauchyMsgs  // Receiver: Crawler Premier
 
-
-// Crawler Premier
+case class GenerateAPI(content: String, taskNum: Float, stockSymbols: List[Any], dateTimes: List[String]) extends CauchyMsgs  // Receiver: Producer Paladin
 case class NeedCrawlerCondition(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin
+case class AwaitDataAndCrawl(content: String) extends CauchyMsgs  // Receiver: Crawler Premier
+
+
+// Crawler Paladin
 case class ReadyOnStandBy(content: String) extends CauchyMsgs  // Receiver: Crawler Soldiers
 
 
 // Data Analyser Premier
-case class CallKafkaProducer(content: String) extends CauchyMsgs  // Receiver: Producer Paladin
-case class CallKafkaConsumer(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin
 case class ExamineData(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin
 
 
@@ -39,8 +39,6 @@ case class ProduceLeftAPI(content: String, leftAPICondition: Map[String, Array[S
 
 
 // Consumer Paladin
-case class GenerateAPI(content: String, sourceActor: String) extends CauchyMsgs  // Receiver: Producer Paladin
-case class GenerateLeftAPI(content: String, leftAPICondition: Map[String, Array[String]]) extends CauchyMsgs  // Receiver: Producer Paladin
 case class NeedAPIInfo(content: String, consumerID: Int) extends CauchyMsgs  // Receiver: Consumer Soldier (Give info to Crawler Soldier)
 case class CheckingData(content: String) extends CauchyMsgs  // Receiver: Consumer Soldier (Check data)
 case class AlertStart(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin self.
