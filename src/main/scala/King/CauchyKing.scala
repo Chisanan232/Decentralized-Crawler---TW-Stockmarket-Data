@@ -81,7 +81,7 @@ class CauchyKing extends Actor with ActorLogging {
   }
 
 
-  def receive: Receive = {
+  override def receive: Receive = {
 
     case DataAim =>
       log.info("All right, begin to work, guys!")
