@@ -41,7 +41,7 @@ class DataSource {
   }
 
 
-  def close_spark(): Unit = {
+  def closeSpark(): Unit = {
     /*
     https://stackoverflow.com/questions/50504677/java-lang-interruptedexception-when-creating-sparksession-in-scala
      */
