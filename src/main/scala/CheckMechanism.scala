@@ -2,11 +2,12 @@ package Taiwan_stock_market_crawler_Cauchy.src.main.scala
 
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config._
 
-import scala.concurrent.{Await, Awaitable}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Awaitable}
 import scala.util.{Failure, Success}
 import scala.util.matching.Regex
 
+import akka.actor.ActorRef
 import akka.util.Timeout
 
 
@@ -25,6 +26,12 @@ class CheckMechanism {
     } else {
       false
     }
+  }
+
+
+  def getActorIndex(actorRef: ActorRef): Int = {
+    val indexFormatter = "[0-9]{1,7}".r
+    indexFormatter.findAllIn(actorRef.path.name.toString).toList.last.toInt
   }
 
 
