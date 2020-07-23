@@ -45,7 +45,7 @@ class APIDate {
     }
 
     val fromDate = new DateTime().withYear(this.fromDateYear).withMonthOfYear(this.fromDateMonth).withDayOfMonth(this.fromDateDay)
-    implicit val toDate = getToDate()
+    implicit val toDate: DateTime = getToDate()
     val allDate = this.datetimeRange(fromDate, new Period().withDays(1))
     this.datetimeList(allDate.toList)
   }
