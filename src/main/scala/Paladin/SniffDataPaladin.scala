@@ -1,38 +1,12 @@
 package Taiwan_stock_market_crawler_Cauchy.src.main.scala.Paladin
 
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config._
-import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Data.{APIDate, DataSource}
-import Taiwan_stock_market_crawler_Cauchy.src.main.scala.KafkaMechanism.DataProducerManagement
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Soldier.SniffDataSoldier
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 
 class SniffDataPaladin extends Actor with ActorLogging {
-
-  val dataRefreshTimeout = 3
-  var dataRefresh: Boolean = false
-  var previousDataRefresh: Boolean = false
-  var dataRefreshTime: Int = 0
-  var previousDataRefreshTime: Int = 0
-
-  val ad = new APIDate
-  var allAPIData: Array[String] = ad.targetDateRange().toArray
-
-  val ds = new DataSource
-  val stockSymbolList: List[Any] = ds.stockSymbolData()
-
-  var checkMap: Map[String, Array[String]] = Map[String, Array[String]]()
-  for (symbol <- stockSymbolList) checkMap += (symbol.toString -> allAPIData)
-
-  private def recordHistory(key: String, date: String): Map[String, Array[String]] = {
-    /*
-    Update the datetime data after examiner soldiers get the data every time
-     */
-    val newDateArray = this.checkMap(key).filter(!_.equals(date))
-    this.checkMap += (key -> newDateArray)
-    this.checkMap
-  }
 
   override def receive: Receive = {
 
