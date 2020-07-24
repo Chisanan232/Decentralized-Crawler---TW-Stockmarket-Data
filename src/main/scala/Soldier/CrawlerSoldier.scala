@@ -3,14 +3,22 @@ package Taiwan_stock_market_crawler_Cauchy.src.main.scala.Soldier
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.CheckMechanism
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.util.{Success, Failure}
+
 import akka.actor.{Actor, ActorLogging, Props}
+import akka.util.Timeout
 
 
 class CrawlerSoldier extends Actor with ActorLogging {
 
-  val check = new CheckMechanism
+  final val king = AkkaConfig.KingName
+  final val paladin = AkkaConfig.DataAnalyserDepartment.DataSaverPaladinName
 
-  def receive: Receive = {
+  private val check = new CheckMechanism
+
+  override def receive: Receive = {
 
     case ReadyOnStandBy =>
       log.info("Roger that!")
@@ -18,24 +26,33 @@ class CrawlerSoldier extends Actor with ActorLogging {
 
 
     case TargetAPI(content, api) =>
-      log.info("Receive API info.")
-      println("**************** Debug for consumer in my system *********************")
-      println("api: " + api)
-      println("**************** Overwrite failure *********************")
+      log.info("\uD83D\uDCEC Receive API info.")
+      log.debug("**************** Debug for consumer in my system *********************")
+      log.debug("api: " + api)
+      log.debug("**************** Overwrite failure *********************")
+
+      // Crawl data
       val te = new TasksExecutor
       val (symbol, date, crawlResult) = te.runCode(api)
-      log.info(s"Crawl data and it's $crawlResult")
+      log.info(s"📄 Crawl data and it's $crawlResult")
+
       // Save data into database Cassandra if it's a great data.
       if (crawlResult.isEmpty.equals(false)) {
-        val producerPaladin = context.actorSelection(AkkaConfig.DataAnalyserDepartment.ProducerPaladinPath)
-        producerPaladin ! FinishAPI("Here is the datetime mapping a company stock symbol which be finish to crawl.", symbol, date)
-        if (this.check.actorPathExists(AkkaConfig.DataAnalyserDepartment.ProducerDateSoldierPath).equals(true)) {
-          val dateProducer = context.actorSelection(AkkaConfig.DataAnalyserDepartment.ProducerDateSoldierPath)
-          dateProducer ! ProduceDate("Here is the datetime data crawler soldier need.", symbol, date)
+
+        implicit val timeout: Timeout = Timeout(5.seconds)
+        context.system.actorSelection(s"user/$king/$paladin").resolveOne().onComplete{
+          case Success(actor) =>
+            log.info("\uD83C\uDF89 Save data into database Cassandra!")
+            actor ! SaveData("", crawlResult)
+            context.parent ! FinishCurrentJob("✅ FINISH", self.path.name.toString)
+          case Failure(exception) =>
+            log.info("\uD83D\uDEAB Cannot save data into database because cannot find the AKKA actor that is data saver.")
+            context.parent ! FinishCurrentJob("❎ FINISH", self.path.name.toString)
         }
-        log.info("Save data into database Cassandra!")
+
       } else {
-        log.info("Data has some problem ....")
+        log.info("\uD83C\uDF1A Data has some problem ....")
+        context.parent ! FinishCurrentJob("❎ FINISH", self.path.name.toString)
       }
 
   }
