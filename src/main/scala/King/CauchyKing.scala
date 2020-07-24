@@ -2,7 +2,7 @@ package Taiwan_stock_market_crawler_Cauchy.src.main.scala.King
 
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.CheckMechanism
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config._
-import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Paladin.{DataProducerPaladin, SniffDataPaladin, CrawlerPaladin}
+import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Paladin.{DataProducerPaladin, SniffDataPaladin, CrawlerPaladin, DataSaverPaladin}
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Data.{DataSource, APIDate}
 
 import scala.concurrent.duration._
@@ -28,15 +28,17 @@ class CauchyKing extends Actor with ActorLogging {
   var DateTimes: List[String] = _
 
   final private val pp: String = AkkaConfig.DataAnalyserDepartment.ProducerPaladinName
-  final private val sp: String = AkkaConfig.DataAnalyserDepartment.SearchDateSoldierName
+  final private val sniffp: String = AkkaConfig.DataAnalyserDepartment.SniffDateSoldierName
   final private val cp: String = AkkaConfig.CrawlerDepartment.PaladinName
+  final private val saverp: String = AkkaConfig.CrawlerDepartment.DataSaverName
 
   /*** Initial AKKA actor object **/
   private final def getActorRef(actorName: String): ActorRef = {
     actorName match {
       case this.pp => context.actorOf(Props[DataProducerPaladin], this.pp)
-      case this.sp => context.actorOf(Props[SniffDataPaladin], this.sp)
+      case this.sniffp => context.actorOf(Props[SniffDataPaladin], this.sniffp)
       case this.cp => context.actorOf(Props[CrawlerPaladin], this.cp)
+      case this.saverp => context.actorOf(Props[DataSaverPaladin], this.saverp)
     }
   }
 
@@ -44,8 +46,9 @@ class CauchyKing extends Actor with ActorLogging {
   private final def sendCallMsg(actor: ActorSelection, actorName: String)(implicit timeout: Timeout): Future[Any] = {
     actorName match {
       case this.pp => actor ? CallDataProducerPaladin
-      case this.sp => actor ? CallDataSnifferPaladin
+      case this.sniffp => actor ? CallDataSnifferPaladin
       case this.cp => actor ? CallCrawlerPaladin
+      case this.saverp => actor ? CallDataSaverPaladin
     }
   }
 
@@ -53,8 +56,9 @@ class CauchyKing extends Actor with ActorLogging {
   private final def sendTaskMsg(actor: ActorSelection, actorName: String): Unit = {
     actorName match {
       case this.pp => actor ! GenerateAPI("\uD83D\uDC40 Here are pre-data all we need.", totalTasksNum, StockIDs, DateTimes)
-      case this.sp => actor ! NeedCrawlerCondition
+      case this.sniffp => actor ! NeedCrawlerCondition
       case this.cp => actor ! AwaitDataAndCrawl
+      case this.saverp => log.info("Nothing need to do")
     }
   }
 
@@ -90,8 +94,9 @@ class CauchyKing extends Actor with ActorLogging {
       log.info("Hello, premiers, I need your help.")
 
       this.runTask(this.pp)
-      this.runTask(this.sp)
+      this.runTask(this.sniffp)
       this.runTask(this.cp)
+      this.runTask(this.saverp)
 
 //      implicit val timeout: Timeout = Timeout(10.seconds)
 //
