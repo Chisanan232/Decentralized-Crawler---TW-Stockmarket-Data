@@ -29,14 +29,14 @@ object AkkaConfig {
     val ProducerPaladinName = "KafkaProducerLeader"
     val ProducerSoldierName = "producer_"
 
-    val SearchPaladinName = "KafkaConsumerLeader"
-    val SearchSoldierName = "consumer_"
+    val SniffPaladinName = "KafkaConsumerLeader"
+    val SniffSoldierName = "consumer_"
 
     val ProducerDateSoldierName = "produce_date_soldier"
     val ProducerStockSymbolsSoldierName = "produce_symbol_soldier"
 
-    val SearchDateSoldierName = "consumer_date_soldier"
-    val SearchStockSymbolsSoldierName = "consumer_symbol_soldier"
+    val SniffDateSoldierName = "consumer_date_soldier"
+    val SniffStockSymbolsSoldierName = "consumer_symbol_soldier"
   }
 
 }
