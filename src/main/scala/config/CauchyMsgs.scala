@@ -27,19 +27,14 @@ case class AwaitDataAndCrawl(content: String) extends CauchyMsgs  // Receiver: C
 case class ReadyOnStandBy(content: String) extends CauchyMsgs  // Receiver: Crawler Soldiers
 
 
-// Data Analyser Premier
-case class ExamineData(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin
-
-
-// Producer Paladin
+// Producer Data Paladin
 case class ProduceSymbol(content: String, symbol: List[Any]) extends CauchyMsgs  // Receiver: Producer Soldier
 case class TotalDataNum(content: String, total: Int) extends CauchyMsgs  // Receiver: King
 case class ProduceAPI(content: String, symbols: List[Any], date: List[Any]) extends CauchyMsgs  // Receiver: Producer Soldier
-case class ProduceLeftAPI(content: String, leftAPICondition: Map[String, Array[String]]) extends CauchyMsgs  // Receiver: Producer Soldier
 
 
-// Consumer Paladin
-case class NeedAPIInfo(content: String, consumerID: Int) extends CauchyMsgs  // Receiver: Consumer Soldier (Give info to Crawler Soldier)
+// Sniff Data Paladin
+case class NeedAPIInfo(content: String) extends CauchyMsgs  // Receiver: Consumer Soldier (Give info to Crawler Soldier)
 case class CheckingData(content: String) extends CauchyMsgs  // Receiver: Consumer Soldier (Check data)
 case class AlertStart(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin self.
 
@@ -48,7 +43,7 @@ case class AlertStart(content: String) extends CauchyMsgs  // Receiver: Consumer
 // No message be send
 
 
-// Consumer Soldier
+// Sniff Data Soldier
 case class TargetAPI(content: String, api: String) extends CauchyMsgs  // Receiver: Crawler Soldier
 case class CheckingResult(content: String, key: String, date: String) extends CauchyMsgs  // Receiver: Consumer Paladin
 
