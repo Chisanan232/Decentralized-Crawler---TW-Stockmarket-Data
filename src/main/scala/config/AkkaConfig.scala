@@ -37,6 +37,8 @@ object AkkaConfig {
 
     val SniffDateSoldierName = "consumer_date_soldier"
     val SniffStockSymbolsSoldierName = "consumer_symbol_soldier"
+
+    val DataSaverPaladinName = "DataSaverPaladin"
   }
 
 }
