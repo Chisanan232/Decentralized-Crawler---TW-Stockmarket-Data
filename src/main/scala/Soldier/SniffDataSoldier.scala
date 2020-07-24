@@ -3,23 +3,31 @@ package Taiwan_stock_market_crawler_Cauchy.src.main.scala.Soldier
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config._
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.KafkaMechanism.DataConsumerManagement
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.JavaConverters._
+import scala.util.{Failure, Success}
+import scala.concurrent.duration._
 
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging}
+import akka.util.Timeout
 
 
-class DataConsumerSoldier extends Actor with ActorLogging {
+class SniffDataSoldier extends Actor with ActorLogging {
 
-  def receive: Receive = {
+  final val king: String = AkkaConfig.KingName
+  final val paladin: String = AkkaConfig.CrawlerDepartment.PaladinName
+  final val soldier: String = AkkaConfig.CrawlerDepartment.SoldierName
 
-    case NeedAPIInfo(content, consumerID) =>
-      log.info("Roger that!")
-      log.info("Start to sniff all data ...")
+  override def receive: Receive = {
+
+    case NeedAPIInfo =>
+      log.info("\uD83D\uDC4A Roger that!")
+      log.info("\uD83D\uDC41 Start to sniff all data ...")
 
       // Overwrite method without keyword extend
       // https://stackoverflow.com/questions/11929198/override-a-function-without-extending-the-class
-      implicit val groupID = "api-resource"
+      implicit val groupID: String = "api-resource"
       val cm = new DataConsumerManagement() {
         override def getMsg(timeoutMins: Int)(implicit consumer: KafkaConsumer[String, String]): Unit =
           while (true) {
@@ -27,45 +35,27 @@ class DataConsumerSoldier extends Actor with ActorLogging {
             for (record <- records) {
               log.info(s"$record")
               if ((record.value() != "") || (record.value() != " ")) {
-                log.info("Get the API conditions! Send it to Crawler Soldier.")
-                val crawlSoldier = context.actorSelection(AkkaConfig.CrawlerDepartment.CrawlSoldierPaths(consumerID))
-                crawlSoldier ! TargetAPI("This is API condition.", record.value())
+
+                log.info("\uD83D\uDCE9 Get the API conditions! Send it to Crawler Soldier.")
+
+                implicit val timeout: Timeout = Timeout(5.seconds)
+                context.system.actorSelection(s"user/$king/$paladin/$soldier").resolveOne().onComplete{
+                  case Success(crawlerActorRef) =>
+                    log.info("\uD83D\uDCEB AKKA actor exist and send message to it.")
+                    context.actorSelection(crawlerActorRef.path) ! TargetAPI("This is API condition.", record.value())
+                  case Failure(exception) =>
+                    log.info("\uD83D\uDC94 ")
+                }
+
               } else {
-                log.info("Got an empty value.")
+                log.info("\uD83D\uDC94 Got an empty value.")
               }
             }
           }
       }
 
-      implicit val consumerS = new KafkaConsumer[String, String](cm.defineProperties())
-      cm.scanOnePartitionMsg(KafkaConfig.APIsTopic, consumerID)
-      cm.getMsg(100)
-
-
-    case CheckingData =>
-      log.info("Roger that!")
-      log.info("Start to checking data.")
-
-      implicit val groupID = "checking-api-resource"
-      val cm = new DataConsumerManagement() {
-        override def getMsg(timeoutMins: Int)(implicit consumer: KafkaConsumer[String, String]): Unit =
-          while (true) {
-            val records = consumer.poll(timeoutMins).asScala
-            for (record <- records) {
-              println(record)
-              if ((record.value() != "") || (record.value() != " ")) {
-                log.info("Get the API conditions! Send it to Crawler Soldier.")
-                val parentActor = context.actorSelection(context.parent.path)
-                parentActor ! CheckingResult("This is check-result.", record.key(), record.value())
-              } else {
-                log.info("Got an empty value.")
-              }
-            }
-          }
-      }
-
-      implicit val consumerS = new KafkaConsumer[String, String](cm.defineProperties())
-      cm.scanAllPartitionsMsg(KafkaConfig.DoneDateTimeTopic)
+      implicit val consumer: KafkaConsumer[String, String] = new KafkaConsumer[String, String](cm.defineProperties())
+      cm.subscribeTopic(KafkaConfig.APIsTopic)
       cm.getMsg(100)
 
   }
