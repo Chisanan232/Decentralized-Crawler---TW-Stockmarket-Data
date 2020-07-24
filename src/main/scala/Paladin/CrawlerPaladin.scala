@@ -73,6 +73,11 @@ class CrawlerPaladin extends Actor with ActorLogging {
         }
       }
 
+
+    case FinishCurrentJob(content, actor) =>
+      log.info(s"$content from AKKA actor $actor")
+      actorsState += (actor -> true)
+
   }
 
 }
