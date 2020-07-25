@@ -40,11 +40,12 @@ class SniffDataSoldier extends Actor with ActorLogging {
 
                 implicit val timeout: Timeout = Timeout(5.seconds)
                 context.system.actorSelection(s"user/$king/$paladin/$soldier").resolveOne().onComplete{
-                  case Success(crawlerActorRef) =>
+                  case Success(crawlerActor) =>
                     log.info("\uD83D\uDCEB AKKA actor exist and send message to it.")
-                    context.actorSelection(crawlerActorRef.path) ! TargetAPI("This is API condition.", record.value())
+                    crawlerActor ! GotAPI("This is API condition.", record.value())
                   case Failure(exception) =>
-                    log.info("\uD83D\uDC94 ")
+                    log.info("\uD83D\uDC94 AKKA actor doesn't exist. Please ensure this error.")
+                    throw exception.fillInStackTrace()
                 }
 
               } else {
