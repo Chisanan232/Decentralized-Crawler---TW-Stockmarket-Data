@@ -59,6 +59,14 @@ class DataBaseOps {
      * date  trade_volume_share   turnover   open_price  highest_price  lowest_price  close_price  change   transaction
      */
     val columns = part.toString match {
+      case "ListedCompanyInfo" =>
+        "stock_symbol char, " +
+          "company varchar, " +
+          "ISIN char, " +
+          "listed_date char, " +
+          "listed_type varchar, " +
+          "industry_type varchar, " +
+          "CFICode char"
       case "StockMarket" =>
         "date varchar , " +
           "trade_volume_share bigint , " +
