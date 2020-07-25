@@ -43,7 +43,7 @@ class CrawlerSoldier extends Actor with ActorLogging {
         context.system.actorSelection(s"user/$king/$paladin").resolveOne().onComplete{
           case Success(actor) =>
             log.info("\uD83C\uDF89 Save data into database Cassandra!")
-            actor ! SaveData("", crawlResult)
+            actor ! SaveData("\uD83D\uDCC4 Here is target data!", crawlResult)
             context.parent ! FinishCurrentJob("✅ FINISH", self.path.name.toString)
           case Failure(exception) =>
             log.info("\uD83D\uDEAB Cannot save data into database because cannot find the AKKA actor that is data saver.")
