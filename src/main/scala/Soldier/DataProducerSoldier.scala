@@ -55,21 +55,6 @@ class DataProducerSoldier extends Actor with ActorLogging {
       })
       pm.closeSession()
 
-
-    case ProduceLeftAPI(content, leftAPICondition) =>
-      log.info("")
-      val pm = new DataProducerManagement
-      implicit val producer = new KafkaProducer[String, String](pm.defineProperties())
-      val te = new TasksExecutor
-      for ((symbol, date) <- leftAPICondition) {
-        date.foreach(d => {
-          val APIInfo = te.generateAPIbyPython(d.toString, symbol.toString)
-          pm.writeMsg(KafkaConfig.APIsTopic, symbol.toString, APIInfo)
-          log.info(APIInfo)
-        })
-      }
-      pm.closeSession()
-
   }
 
 }
