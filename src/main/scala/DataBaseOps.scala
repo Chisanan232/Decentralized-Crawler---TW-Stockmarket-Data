@@ -6,6 +6,8 @@ import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config.DataPart
 import scala.collection.mutable.ListBuffer
 import scala.util.matching.Regex
 
+import com.datastax.driver.core.Cluster
+
 
 class DataBaseOps {
 
