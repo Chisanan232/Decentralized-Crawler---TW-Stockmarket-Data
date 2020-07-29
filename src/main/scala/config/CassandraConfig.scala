@@ -9,4 +9,7 @@ object CassandraConfig {
 
   val Keyspace = "stock-market"
 
+  val tableListedCompany = "tw-listed-company"
+  val tableStockData = "tw-stock"
+
 }
