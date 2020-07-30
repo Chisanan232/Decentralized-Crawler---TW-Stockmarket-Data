@@ -100,9 +100,21 @@ class DataSaverPaladin extends Actor with ActorLogging {
       sender() ! msg
 
 
-    case SaveData(content, data) =>
-      log.info("")
+    case SaveData(content, dataType, data) =>
+      log.info("Receive data.")
+      log.info(s"The data type is $dataType")
 
+      AkkaConfig.CrawlSaverPattern.toString match {
+        case "CSVFile" =>
+          log.info("Will write data to file as CSV type file.")
+          // Not finish
+        case "DataBase" =>
+          log.info("Will write data to database -- Cassandra.")
+          this.writeOneData(CassandraConfig.Keyspace, dataType, CassandraConfig.tableStockData, data)
+          sender() ! SaveFinish
+        case _ =>
+          log.info("The saver type is incorrect. Please check it.")
+      }
       log.info("✨ Save data successfully.")
 
   }
