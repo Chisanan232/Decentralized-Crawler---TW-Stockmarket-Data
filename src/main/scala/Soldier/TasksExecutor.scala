@@ -45,10 +45,10 @@ class TasksExecutor {
     val parameters = this.jsonToMap(pyCodeParameters)
 
     // 2. Get the data which be saved in the collection
-    val api = parameters.get("api").get.toString
-    val apiConditions = parameters.get("condition").get
-    val date = apiConditions.asInstanceOf[Map[String, String]].get("date").get
-    val symbol = apiConditions.asInstanceOf[Map[String, String]].get("stockNo").get
+    val api = parameters("api").toString
+    val apiConditions = parameters("condition")
+    val date = apiConditions.asInstanceOf[Map[String, String]]("date")
+    val symbol = apiConditions.asInstanceOf[Map[String, String]]("stockNo")
 
     // 3. Assign the value which we got to the string type value as a command line
     val runningCmd = s"python $Path/multi-lan_stock-crawler_py-ver.py --stock-api $api --date $date --listed-company $symbol --sleep enable"
