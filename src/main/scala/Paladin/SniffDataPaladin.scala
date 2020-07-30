@@ -10,6 +10,7 @@ class SniffDataPaladin extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
+    /** Initial SniffDataPaladin AKKA actor **/
     case CallDataSnifferPaladin =>
       log.info("\uD83E\uDD18 I Receive task!")
       val searchLeaderPath = context.self.path
@@ -17,6 +18,7 @@ class SniffDataPaladin extends Actor with ActorLogging {
       sender() ! msg
 
 
+    /** Request API pre-data for crawler **/
     case NeedCrawlerCondition =>
       log.info("\uD83D\uDC40 Checking crawler conditions ...")
 

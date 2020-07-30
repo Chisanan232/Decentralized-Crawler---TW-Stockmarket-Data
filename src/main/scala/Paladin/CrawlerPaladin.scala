@@ -12,16 +12,18 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 class CrawlerPaladin extends Actor with ActorLogging {
 
   /** The logic of actors state Map value is "Does it could receive next task?" **/
-  var currentReceiveNum: BigInt = _
-  var allNum: BigInt = _
-  var actorsState: Map[String, Boolean] = Map[String, Boolean]()
-  var leftAPIMap: Map[String, ListBuffer[String]] = Map[String, ListBuffer[String]]()
+  var currentReceiveNum: BigInt = _      // The total API amount Paladin got currently
+  var allNum: BigInt = _                 // The total API amount
+  var actorsState: Map[String, Boolean] = Map[String, Boolean]()      // Record every soldier actors crawl-state
+  var leftAPIMap: Map[String, ListBuffer[String]] = Map[String, ListBuffer[String]]()   // Record all left APIs
 
+  /** Initial actors states **/
   private def initActorsState(actorName: String): Map[String, Boolean] = {
     actorsState += (AkkaConfig.CrawlerDepartment.SoldierName -> true)
     actorsState
   }
 
+  /** Update the actor state data **/
   private def recordHistory(key: String, date: String): Map[String, ListBuffer[String]] = {
     /*
     Update the datetime data after examiner soldiers get the data every time
@@ -109,10 +111,10 @@ class CrawlerPaladin extends Actor with ActorLogging {
       }
 
 
-        case FinishCurrentJob(content, actor)
-        =>
-        log.info(s"$content from AKKA actor $actor")
-        actorsState += (actor -> true)
+    /** Receive Soldiers done signal and change the actor state **/
+    case FinishCurrentJob(content, actor) =>
+      log.info(s"$content from AKKA actor $actor")
+      actorsState += (actor -> true)
 
   }
 }

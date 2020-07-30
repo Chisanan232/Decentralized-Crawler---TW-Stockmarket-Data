@@ -15,6 +15,7 @@ class DataProducerPaladin extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
+    /** Initial DataProducerPaladin AKKA actor **/
     case CallDataProducerPaladin =>
       log.info("I Receive task!")
       val producerLeaderPath = context.self.path
@@ -22,6 +23,7 @@ class DataProducerPaladin extends Actor with ActorLogging {
       sender() ! msg
 
 
+    /** Generate API pre-data for crawler **/
     case GenerateAPI(content, taskNum, stockSymbols, dateTimes) =>
       log.info("Start to generate API conditions data!")
       val stockSymbolProducerRef = context.actorOf(Props[DataProducerSoldier], AkkaConfig.DataAnalyserDepartment.ProducerStockSymbolsSoldierName)
@@ -66,6 +68,7 @@ class DataProducerPaladin extends Actor with ActorLogging {
       })
 
 
+    /** Write API pre-data into Kafka. PS. This received-message is a little bit useless and maybe reprecated it in the future **/
     case FinishAPI(content, stockSymbol, date) =>
       log.info("Good job, crawler soldier!")
       val pm = new DataProducerManagement

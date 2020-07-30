@@ -89,6 +89,7 @@ class CauchyKing extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
+    /** Initial all AKKA actors and send the mapping tasks **/
     case DataAim =>
       log.info("All right, begin to work, guys!")
       log.info("Hello, premiers, I need your help.")
@@ -99,11 +100,13 @@ class CauchyKing extends Actor with ActorLogging {
       this.runTask(this.saverp)
 
 
+    /** Get the total tasks amount it should has **/
     case TotalDataNum(content, total) =>
       log.info(s"All data amount is $total")
       totalTasksNum = total
 
 
+    /** Receive the finish task signal from Data-Saver Paladin **/
     case SaveFinish =>
       currentDoneTaskNum += 1
       log.info("\uD83C\uDFC1 Finish 1 task!")

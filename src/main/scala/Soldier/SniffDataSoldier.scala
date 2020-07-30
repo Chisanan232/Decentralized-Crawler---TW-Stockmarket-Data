@@ -21,6 +21,7 @@ class SniffDataSoldier extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
+    /** Consume message from Kafka and send it to AKKA crawler Actor **/
     case NeedAPIInfo =>
       log.info("\uD83D\uDC4A Roger that!")
       log.info("\uD83D\uDC41 Start to sniff all data ...")

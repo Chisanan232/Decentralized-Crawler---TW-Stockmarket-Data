@@ -31,9 +31,11 @@ class DataSaverPaladin extends Actor with ActorLogging {
   }
 
 
+  /** Implicitly transfer data type annotation **/
   implicit def IntToBigInt(data: (Int, Int, Int, Int, Int, Int, Int, Int, Int)): (BigInt, BigInt, BigInt, BigInt, BigInt, BigInt, BigInt, BigInt, BigInt) =
     (BigInt(data._1), BigInt(data._2), BigInt(data._3), BigInt(data._4), BigInt(data._5), BigInt(data._6), BigInt(data._7), BigInt(data._8), BigInt(data._9))
 
+  /** Save data (especially means one line or one unit, row) into database **/
   def writeOneData(keyspace: String, dataType: DataPart, table: String, data: Any): Unit = {
     val dbColumns = dataType.toString match {
       case "ListedCompanyInfo" =>
@@ -48,6 +50,7 @@ class DataSaverPaladin extends Actor with ActorLogging {
   }
 
 
+  /** Save data (especially means multiple lines or multiple units, rows) into database **/
   def writeMultiData(keyspace: String, dataType: DataPart, table: String, data: List[Any]): Unit = {
     /***
      * How to do some operators with Seq type data
@@ -100,6 +103,7 @@ class DataSaverPaladin extends Actor with ActorLogging {
       sender() ! msg
 
 
+    /** Write data into database **/
     case SaveData(content, dataType, data) =>
       log.info("Receive data.")
       log.info(s"The data type is $dataType")

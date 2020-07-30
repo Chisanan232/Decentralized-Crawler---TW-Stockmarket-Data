@@ -20,11 +20,13 @@ class CrawlerSoldier extends Actor with ActorLogging {
 
   override def receive: Receive = {
 
+    /** Initial CrawlerSoldier AKKA actor **/
     case ReadyOnStandBy =>
       log.info("Roger that!")
       log.info("Waiting for data ....")
 
 
+    /** Crawl data main code **/
     case TargetAPI(content, api) =>
       log.info("\uD83D\uDCEC Receive API info.")
       log.debug("**************** Debug for consumer in my system *********************")

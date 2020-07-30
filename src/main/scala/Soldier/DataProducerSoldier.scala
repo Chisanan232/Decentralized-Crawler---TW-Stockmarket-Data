@@ -24,17 +24,7 @@ class DataProducerSoldier extends Actor with ActorLogging {
       pm.closeSession()
 
 
-    case ProduceDate(content, symbol, date) =>
-      log.info("")
-      val pm = new DataProducerManagement
-      implicit val producer = new KafkaProducer[String, String](pm.defineProperties())
-      if (pm.topicExists(KafkaConfig.DoneDateTimeTopic).equals(false)) {
-        pm.createOneNewTopic(KafkaConfig.DoneDateTimeTopic, KafkaConfig.DoneDateTimeTopicPartitionsNum, KafkaConfig.ReplicationNum)
-      }
-      pm.writeMsg(KafkaConfig.DoneDateTimeTopic, symbol, date)
-      pm.closeSession()
-
-
+    /** Write message about API pre-data info to Kafka **/
     case ProduceAPI(content, symbols, date) =>
       log.info("Receive task! Start to generate API info!")
       log.info("=+=+=+=+=+=+=+= This is all data this actor need to handle =+=+=+=+=+=+=+=")
@@ -44,7 +34,7 @@ class DataProducerSoldier extends Actor with ActorLogging {
       // 1. Call Python method to generate API conditions info which I need
       // 2. Save these info into topic of Kafka server
       val pm = new DataProducerManagement
-      implicit val producer = new KafkaProducer[String, String](pm.defineProperties())
+      implicit val producer: KafkaProducer[String, String] = new KafkaProducer[String, String](pm.defineProperties())
       val te = new TasksExecutor
       symbols.foreach(symbol => {
         date.foreach(d => {

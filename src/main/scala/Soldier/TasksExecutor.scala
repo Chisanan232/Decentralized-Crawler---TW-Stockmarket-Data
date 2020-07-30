@@ -47,6 +47,7 @@ class TasksExecutor {
 //  }
 
 
+  /** Crawl data via Python3 code **/
   def runCode(pyCodeParameters: String): (String, String, String) = {
     // 1. Parser Json type value to be a Scala collection "Map"
     val parameters = this.jsonToMap(pyCodeParameters)
