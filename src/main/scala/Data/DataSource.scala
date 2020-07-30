@@ -1,5 +1,7 @@
 package Taiwan_stock_market_crawler_Cauchy.src.main.scala.Data
 
+import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config.AkkaConfig
+
 import java.nio.file.{Files, Paths}
 
 import org.apache.spark.{SparkContext, sql}
@@ -24,7 +26,12 @@ class FileOpts {
  */
 class DataSource {
 
-  val DataFilePath = "src/main/scala/Taiwan_stock_market_crawler_Cauchy/src/main/resources/all_listed_company.json"
+//  val DataFilePath = "src/main/scala/Taiwan_stock_market_crawler_Cauchy/src/main/resources/all_listed_company.json"
+  val DataFilePath: String = if (AkkaConfig.InDocker.equals(true)) {
+    "Taiwan_stock_market_crawler_Cauchy/src/main/resources/all_listed_company.json"
+  } else {
+    "src/main/scala/Taiwan_stock_market_crawler_Cauchy/src/main/resources/all_listed_company.json"
+  }
 
   val spark: SparkSession = SparkSession.builder()
     .appName("Taiwan Stock Market decentralized crawler")
