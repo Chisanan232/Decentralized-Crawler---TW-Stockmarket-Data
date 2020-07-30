@@ -1,5 +1,6 @@
 package Taiwan_stock_market_crawler_Cauchy.src.main.scala.config
 
+import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config.DataPart
 
 trait CauchyMsgs {
   val content: String
@@ -37,12 +38,10 @@ final case class ProduceAPI(content: String, symbols: List[Any], date: List[Any]
 
 // Sniff Data Paladin
 final case class NeedAPIInfo(content: String) extends CauchyMsgs  // Receiver: Consumer Soldier (Give info to Crawler Soldier)
-final case class CheckingData(content: String) extends CauchyMsgs  // Receiver: Consumer Soldier (Check data)
-final case class AlertStart(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin self.
 
 
 // Data Saver Paladin
-final case class SaveData(content: String, data: Any) extends CauchyMsgs  // Receiver: Cassandra Soldier (Give info to Crawler Soldier)
+final case class SaveFinish(content: String) extends CauchyMsgs
 
 
 // Producer Soldier
@@ -51,12 +50,12 @@ final case class SaveData(content: String, data: Any) extends CauchyMsgs  // Rec
 
 // Sniff Data Soldier
 final case class GotAPI(content: String, api: String) extends CauchyMsgs  // Receiver: Crawler Soldier
-final case class CheckingResult(content: String, key: String, date: String) extends CauchyMsgs  // Receiver: Consumer Paladin
 
 
 // Crawler Soldier
-final case class ProduceDate(content: String, symbol: String, date: String) extends CauchyMsgs  // Receiver: Producer Soldier
+final case class SaveData(content: String, dataType: DataPart, data: Any) extends CauchyMsgs  // Receiver: Cassandra Soldier (Give info to Crawler Soldier)
 final case class FinishCurrentJob(content: String, actor: String) extends CauchyMsgs  // Receiver: Crawler Paladin
+
 
 
 // For Testing or Debug
