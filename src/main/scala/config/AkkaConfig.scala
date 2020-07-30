@@ -3,6 +3,7 @@ package Taiwan_stock_market_crawler_Cauchy.src.main.scala.config
 object AkkaConfig {
 
   var InDocker = false
+  var CrawlSaverPattern = "DataBase"
 
   val SystemName = "CauchySystem"
   val KingName = "King"
