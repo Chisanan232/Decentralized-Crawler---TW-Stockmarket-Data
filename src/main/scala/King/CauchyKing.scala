@@ -5,11 +5,11 @@ import Taiwan_stock_market_crawler_Cauchy.src.main.scala.config._
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Paladin.{DataProducerPaladin, SniffDataPaladin, CrawlerPaladin, DataSaverPaladin}
 import Taiwan_stock_market_crawler_Cauchy.src.main.scala.Data.{DataSource, APIDate}
 
-import scala.concurrent.duration._
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSelection, Props}
 import akka.util.Timeout
 import akka.pattern.ask
 
+import scala.concurrent.duration._
 import scala.concurrent.Future
 
 
