@@ -21,7 +21,7 @@ class CauchyKing extends Actor with ActorLogging {
   private val preData = new DataSource
   private val preDataDatetime = new APIDate
 
-  var totalTasksNum: Float = _
+  var totalTasksNum: BigInt = _
   var currentDoneTaskNum = 0
 
   var StockIDs: List[Any] = _
@@ -57,7 +57,7 @@ class CauchyKing extends Actor with ActorLogging {
     actorName match {
       case this.pp => actor ! GenerateAPI("\uD83D\uDC40 Here are pre-data all we need.", totalTasksNum, StockIDs, DateTimes)
       case this.sniffp => actor ! NeedCrawlerCondition
-      case this.cp => actor ! AwaitDataAndCrawl
+      case this.cp => actor ! AwaitDataAndCrawl("Here is the total tasks number it has", totalTasksNum)
       case this.saverp => log.info("Nothing need to do")
     }
   }
@@ -98,36 +98,20 @@ class CauchyKing extends Actor with ActorLogging {
       this.runTask(this.cp)
       this.runTask(this.saverp)
 
-//      implicit val timeout: Timeout = Timeout(10.seconds)
-//
-//      val crawlerPremierRef = context.actorOf(Props[CrawlerPremier], AkkaConfig.CrawlerDepartment.CrawlPremierName)
-//      AkkaConfig.CrawlerDepartment.PremierPath = crawlerPremierRef.path.toString
-//      val crawlerPremierActor = context.actorSelection(crawlerPremierRef.path)
-//      val crawlResp = crawlerPremierActor ? CallCrawlerPremier
-//      val crawlChecksum = this.check.waitAnswer(crawlResp, crawlerPremierRef.path.toString)
-//      if (crawlChecksum.equals(true)) {
-//        log.info("Thank you my man, Crawler Premier.")
-//        crawlerPremierActor ! AwaitDataAndCrawl
-//      }
-//
-//      val dataPremierRef = context.actorOf(Props[DataPremier], AkkaConfig.DataAnalyserDepartment.DataPremierName)
-//      AkkaConfig.DataAnalyserDepartment.PremierPath = dataPremierRef.path.toString
-//      val dataPremierActor = context.actorSelection(dataPremierRef.path)
-//      val dataResp = dataPremierActor ? CallDataPremier
-//      val dataChecksum = this.check.waitAnswer(dataResp, dataPremierRef.path.toString)
-//      if (dataChecksum.equals(true)) {
-//        log.info("Thank you my man, Data Premier.")
-//        dataPremierActor ! MayIUseData
-//      }
-
 
     case TotalDataNum(content, total) =>
       log.info(s"All data amount is $total")
-      this.totalTasksNum = total
+      totalTasksNum = total
 
 
-    case FinishTask =>
-      log.info("")
+    case SaveFinish =>
+      currentDoneTaskNum += 1
+      log.info("\uD83C\uDFC1 Finish 1 task!")
+      if (currentDoneTaskNum.equals(totalTasksNum)) {
+        // Finish all tasks and end the AKKA system
+        log.info("\uD83C\uDDF9\uD83C\uDDFC\uD83C\uDFC6\uD83C\uDF8A\uD83C\uDF89 Finish all tasks and end the AKKA system.")
+        context.system.terminate()
+      }
 
   }
 
