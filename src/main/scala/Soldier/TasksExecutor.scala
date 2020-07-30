@@ -17,7 +17,7 @@ class TasksExecutor {
      * https://stackoverflow.com/questions/29908297/how-can-i-convert-a-json-string-to-a-scala-map
      */
 
-    implicit val formats = DefaultFormats
+    implicit val formats: DefaultFormats.type = DefaultFormats
     // Method 1
     parse(jsonData).extract[Map[String, Any]]
     // Method 2
