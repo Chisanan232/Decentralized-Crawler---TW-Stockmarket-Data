@@ -42,7 +42,7 @@ class DataSource {
   }
 
 
-  def dataNumber(): Float = {
+  def dataNumber(): BigInt = {
     val data = this.readData()
     data.count()
   }
