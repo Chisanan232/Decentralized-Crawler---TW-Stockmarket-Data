@@ -20,14 +20,15 @@ final case class CallDataSnifferPaladin(content: String) extends CauchyMsgs  // 
 final case class CallCrawlerPaladin(content: String) extends CauchyMsgs  // Receiver: Crawler Premier
 final case class CallDataSaverPaladin(content: String) extends CauchyMsgs  // Receiver: Data Saver Paladin
 
-final case class GenerateAPI(content: String, taskNum: Float, stockSymbols: List[Any], dateTimes: List[String]) extends CauchyMsgs  // Receiver: Producer Paladin
+final case class GenerateAPI(content: String, taskNum: BigInt, stockSymbols: List[Any], dateTimes: List[String]) extends CauchyMsgs  // Receiver: Producer Paladin
 final case class NeedCrawlerCondition(content: String) extends CauchyMsgs  // Receiver: Consumer Paladin
-final case class AwaitDataAndCrawl(content: String) extends CauchyMsgs  // Receiver: Crawler Premier
+final case class AwaitDataAndCrawl(content: String, allTaskNum: BigInt) extends CauchyMsgs  // Receiver: Crawler Premier
 
 
 // Crawler Paladin
 final case class ReadyOnStandBy(content: String) extends CauchyMsgs  // Receiver: Crawler Soldiers
 final case class TargetAPI(content: String, api: String) extends CauchyMsgs  // Receiver: Crawler Soldier
+final case class ClearData(content: String) extends CauchyMsgs
 
 
 // Producer Data Paladin
