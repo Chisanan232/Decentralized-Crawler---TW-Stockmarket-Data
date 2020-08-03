@@ -1,0 +1,53 @@
+version: '2'
+services:
+  zookeeper:
+    container_name: zookeeper_node
+    image: zookeeper
+    restart: always
+    networks:
+      - cluster
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+
+  kafka:
+    container_name: broker_node
+    image: wurstmeister/kafka
+    restart: always
+    env_file:
+      - kafka_conf.env
+    networks:
+      - cluster
+    volumes:
+      - ""
+    ports:
+      - "9092:9092"
+
+  cassandra:
+    container_name: cassandra_node
+    image: cassandra
+    restart: always
+    env_file:
+      - ./cassandra.env
+    environment:
+      - "CASSANDRA_LISTEN_ADDRESS=192.168.1.101"
+    networks:
+      - cluster
+    volumes:
+      - ""
+    ports:
+      - "7000:7000"
+      - "9042:9042"
+
+  crawler:
+    container_name: tw_stock_crawler
+    networks:
+      - cluster
+    ports:
+      - ""
+
+
+networks:
+  cluster:
+    driver: bridge
